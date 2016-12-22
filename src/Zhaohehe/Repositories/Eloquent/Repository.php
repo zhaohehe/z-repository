@@ -6,6 +6,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Container\Container as App;
 use Zhaohehe\Repositories\Criteria\Criteria;
+use Zhaohehe\Repositories\Contracts\CriteriaInterface;
 use Zhaohehe\Repositories\Contracts\RepositoryInterface;
 use Zhaohehe\Repositories\Exceptions\RepositoryException;
 
@@ -16,7 +17,7 @@ use Zhaohehe\Repositories\Exceptions\RepositoryException;
  *
  * @package Zhaohehe\Repositories\Eloquent
  */
-abstract class Repository implements RepositoryInterface
+abstract class Repository implements RepositoryInterface, CriteriaInterface
 {
 
     /**

@@ -6,6 +6,7 @@
 
 namespace Zhaohehe\Repositories\Criteria;
 
+use Zhaohehe\Repositories\Contracts\RepositoryInterface;
 
 /**
  * Class Criteria
@@ -18,6 +19,6 @@ abstract class Criteria
      *
      * @return mixed
      */
-    public abstract function apply($model, $repository);
+    public abstract function apply($model, RepositoryInterface $repository);
 
 }
