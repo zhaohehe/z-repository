@@ -5,90 +5,27 @@
 
 namespace Zhaohehe\Repositories\Console\Commands\Creators;
 
-use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Facades\Config;
-use Doctrine\Common\Inflector\Inflector;
 
 /**
  * Class CriteriaCreator
  *
  * @package Zhaohehe\Repositories\Console\Commands\Creators
  */
-class CriteriaCreator
+class CriteriaCreator extends Creator
 {
 
     /**
-     * @var Filesystem
+     * @var string
      */
-    protected $files;
+    protected $stub = 'criteria.stub';
 
-    /**
-     * @var Criteria
-     */
-    protected $criteria;
-
-    /**
-     * @var model
-     */
-    protected $model;
 
     /**
      * @var criteria directory
      */
-    protected $directory;
+    protected $directory = 'repository.criteria_path';
 
-
-
-    /**
-     * RepositoryCreator constructor.
-     *
-     * @param Filesystem $filesystem
-     */
-    public function __construct(Filesystem $filesystem)
-    {
-        $this->files = $filesystem;
-    }
-
-
-    public function create($criteria, $model)
-    {
-        $this->model = $model;
-        $this->criteria = $criteria;
-
-        $this->createDirectory();
-
-        $this->createClass();
-    }
-
-
-    /**
-     * create criteria directory
-     */
-    protected function createDirectory()
-    {
-        $this->directory = Config::get('repository.criteria_path');
-
-        if (!$this->files->isDirectory($this->directory)) {    // Create the directory if not.
-
-            $this->files->makeDirectory($this->directory, 0755, true);
-        }
-    }
-
-
-
-    /**
-     * get stub
-     *
-     * @return string
-     */
-    protected function getStub()
-    {
-        $stub_path = __DIR__ . '/../../../../../../resources/stubs/';
-
-        $stub = $this->files->get($stub_path . "criteria.stub");
-
-        return $stub;
-    }
 
 
     /**
@@ -96,7 +33,7 @@ class CriteriaCreator
      */
     protected function createClass()
     {
-        $filename = (!strpos($this->criteria, 'Criteria')) ? $this->criteria.'Criteria' : $this->criteria;
+        $filename = (!strpos($this->class, 'Criteria')) ? $this->class.'Criteria' : $this->class;
 
         $path = $this->directory . DIRECTORY_SEPARATOR . $filename . '.php';
 

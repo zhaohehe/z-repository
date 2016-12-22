@@ -6,7 +6,6 @@
 
 namespace Zhaohehe\Repositories\Console\Commands\Creators;
 
-use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Facades\Config;
 use Doctrine\Common\Inflector\Inflector;
 
@@ -16,67 +15,23 @@ use Doctrine\Common\Inflector\Inflector;
  *
  * @package Zhaohehe\Repositories\Console\Commands\Creators
  */
-class RepositoryCreator
+class RepositoryCreator extends Creator
 {
-
-    /**
-     * @var Filesystem
-     */
-    protected $files;
-
-    /**
-     * @var Repository
-     */
-    protected $repository;
-
-    /**
-     * @var model
-     */
-    protected $model;
 
     /**
      * @var repository directory
      */
-    protected $directory;
+    protected $directory = 'repository.repository_path';
 
+    /**
+     * @var stub
+     */
+    protected $stub = 'repository.stub';
 
 
     /**
-     * RepositoryCreator constructor.
-     *
-     * @param Filesystem $filesystem
+     * @return string
      */
-    public function __construct(Filesystem $filesystem)
-    {
-        $this->files = $filesystem;
-    }
-
-
-    public function create($repository, $model)
-    {
-        $this->model = $model;
-        $this->repository = $repository;
-
-        $this->createDirectory();
-
-        $this->createClass();
-    }
-
-
-    /**
-     * create repository directory
-     */
-    protected function createDirectory()
-    {
-        $this->directory = Config::get('repository.repository_path');
-
-        if (!$this->files->isDirectory($this->directory)) {    // Create the directory if not.
-
-            $this->files->makeDirectory($this->directory, 0755, true);
-        }
-    }
-
-
     protected function getModelName()
     {
         // Check if the model isset.
@@ -98,7 +53,7 @@ class RepositoryCreator
      */
     protected function stripRepositoryName()
     {
-        $stripped   = str_replace("repository", "", strtolower($this->repository));    // Remove repository from the string.
+        $stripped   = str_replace("repository", "", strtolower($this->class));    // Remove repository from the string.
 
         $result = ucfirst($stripped);       // Uppercase repository name.
 
@@ -107,26 +62,11 @@ class RepositoryCreator
 
 
     /**
-     * get stub
-     *
-     * @return string
-     */
-    protected function getStub()
-    {
-        $stub_path = __DIR__ . '/../../../../../../resources/stubs/';
-
-        $stub = $this->files->get($stub_path . "repository.stub");
-
-        return $stub;
-    }
-
-
-    /**
      * @return int
      */
     protected function createClass()
     {
-        $filename = (!strpos($this->repository, 'Repository')) ? $this->repository.'Repository' : $this->repository;
+        $filename = (!strpos($this->class, 'Repository')) ? $this->class.'Repository' : $this->class;
 
         $path = $this->directory . DIRECTORY_SEPARATOR . $filename . '.php';
 
