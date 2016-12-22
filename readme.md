@@ -1,7 +1,7 @@
 # Z-Repositories
 
-[![Latest Stable Version](https://poser.pugx.org/bosnadev/repositories/v/stable)](https://packagist.org/packages/bosnadev/repositories)
-[![License](https://poser.pugx.org/bosnadev/repositories/license)](https://packagist.org/packages/bosnadev/repositories)
+[![Latest Stable Version](https://poser.pugx.org/zhaohehe/zrepository/v/stable)](https://packagist.org/packages/zhaohehe/zrepository)
+[![License](https://poser.pugx.org/zhaohehe/zrepository/license)](https://packagist.org/packages/zhaohehe/zrepository)
 
 Z-Repositories is a package for Laravel 5 which is used to abstract the database layer. This makes applications much easier to maintain.
 
