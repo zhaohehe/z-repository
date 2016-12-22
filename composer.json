@@ -1,5 +1,8 @@
 {
     "name": "zhaohehe/zrepository",
+    "description": "Laravel Repositories",
+    "keywords": ["laravel", "repository", "repositories", "eloquent", "database", "transformer"],
+    "license": "MIT",
     "authors": [
         {
             "name": "zhaohehe",
@@ -7,6 +10,11 @@
         }
     ],
     "require": {
+        "php": ">=5.5.9",
+        "illuminate/support": "^5.2",
+        "illuminate/database": "^5.2",
+        "illuminate/filesystem": "^5.2",
+        "illuminate/console": "^5.2"
     },
     "autoload": {
         "psr-4": {

@@ -3,7 +3,7 @@
 [![Latest Stable Version](https://poser.pugx.org/zhaohehe/zrepository/v/stable)](https://packagist.org/packages/zhaohehe/zrepository)
 [![License](https://poser.pugx.org/zhaohehe/zrepository/license)](https://packagist.org/packages/zhaohehe/zrepository)
 
-Z-Repositories is a package for Laravel 5 which is used to abstract the database layer. This makes applications much easier to maintain.
+z-repository is a package for Laravel 5 which is used to abstract the database layer. This makes applications much easier to maintain.
 
 ## Installation
 
@@ -11,23 +11,19 @@ Run the following command from you terminal:
 
 
  ```bash
- composer require "zhaohehe/zrepository: 0.*"
+ composer require "zhaohehe/zrepository"
  ```
 
-or add this to require section in your composer.json file:
+In your ```config/app.php``` add  ```Zhaohehe\Repositories\Providers\RepositoryProvider::class```to the end of the providers array:
 
- ```
- "zhaohehe/zrepository": "0.*"
- ```
-
-then run ```composer update```
-
-after that, add the following items to your serviceProvider array ,in ```config\app.php```
-```
-Zhaohehe\Repositories\Providers\RepositoryProvider::class,
+```php
+'providers' => [
+    ...
+    Zhaohehe\Repositories\Providers\RepositoryProvider::class,
+],
 ```
 
-finally, run
+Publish Configuration
 ```bash
 php artisan vendor:publish
 ```
