@@ -112,7 +112,22 @@ abstract class Repository implements RepositoryInterface
      */
     public function all($columns = ['*'])
     {
+        $this->applyCriteria();
 
+        return $this->model->get($columns);
+    }
+
+
+    /**
+     * @param array $relations
+     *
+     * @return $this
+     */
+    public function with(array $relations)
+    {
+        $this->model = $this->model->with($relations);
+
+        return $this;
     }
 
 
@@ -124,7 +139,9 @@ abstract class Repository implements RepositoryInterface
      */
     public function paginate($perPage = 15, $columns = ['*'])
     {
+        $this->applyCriteria();
 
+        return $this->model->paginate($perPage, $columns);
     }
 
 
@@ -135,7 +152,7 @@ abstract class Repository implements RepositoryInterface
      */
     public function create(array $data)
     {
-
+        return $this->model->create($data);
     }
 
 
@@ -146,7 +163,11 @@ abstract class Repository implements RepositoryInterface
      */
     public function save(array $data)
     {
+        foreach ($data as $key => $value) {
+            $this->model->$key = $value;
+        }
 
+        return $this->model->save();
     }
 
 
@@ -157,7 +178,7 @@ abstract class Repository implements RepositoryInterface
      */
     public function delete($id)
     {
-
+        return $this->model->destroy($id);
     }
 
 
@@ -167,9 +188,9 @@ abstract class Repository implements RepositoryInterface
      *
      * @return mixed
      */
-    public function update(array $data, $id)
+    public function update(array $data, $id, $field = 'id')
     {
-
+        return $this->model->where($field, '=', $id)->update($data);
     }
 
 
@@ -196,7 +217,9 @@ abstract class Repository implements RepositoryInterface
      */
     public function findBy($field, $value, $columns = ['*'])
     {
+        $this->applyCriteria();
 
+        return $this->model->where($field, '=', $value)->first($columns);
     }
 
 
@@ -206,9 +229,27 @@ abstract class Repository implements RepositoryInterface
      *
      * @return mixed
      */
-    public function findWhere($where, $columns = ['*'])
+    public function findWhere($where, $columns = ['*'], $or = false)
     {
+        $this->applyCriteria();
 
+        foreach ($where as $field => $value) {
+            if ($value instanceof \Closure) {
+                $this->model = (! $or) ? $this->model->where($value) : $this->model->orWhere($value);
+            } elseif (is_array($value)) {
+                if (count($value) == 3) {    // 'id' ,'>', 100
+                    list($field, $operator, $search) = $value;
+                    $this->model = (! $or) ? $this->model->where($field, $operator, $search) : $this->model->oeWhere($field, $operator, $search);
+                } elseif (count($value) == 2) {    // 'name', 'zhaohehe'
+                    list($field, $search) = $value;
+                    $this->model = (! $or) ? $this->model->where($field, $search) : $this->model->orWhere($field, $search);
+                }
+            } else {
+                $this->model = (! $or) ? $this->model->where($field, '=', $value) : $this->model->orWhere($field, $value);
+            }
+        }
+
+        return $this->model->get($columns);
     }
 
 
