@@ -1,0 +1,17 @@
+{
+    "name": "zhaohehe/zrepository",
+    "authors": [
+        {
+            "name": "zhaohehe",
+            "email": "zhaohehedola@gmail.com"
+        }
+    ],
+    "require": {
+    },
+    "autoload": {
+        "psr-4": {
+            "Zhaohehe\\": "src/Zhaohehe/"
+        }
+    },
+    "minimum-stability": "dev"
+}
