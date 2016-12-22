@@ -1,0 +1,26 @@
+<?php
+
+/*
+ * Sometime too hot the eye of heaven shines
+ */
+
+namespace repository_namespace;
+
+use Zhaohehe\Repositories\Eloquent\Repository;
+
+/**
+ * Class repository_class
+
+ * @package repository_namespace
+ */
+class repository_class extends Repository
+{
+
+    /**
+     * @return string
+     */
+    public function model()
+    {
+        return 'model_path\model_name';
+    }
+}
