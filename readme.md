@@ -1,4 +1,4 @@
-# Z-Repositories
+# z-repository
 
 [![Latest Stable Version](https://poser.pugx.org/zhaohehe/zrepository/v/stable)](https://packagist.org/packages/zhaohehe/zrepository)
 [![License](https://poser.pugx.org/zhaohehe/zrepository/license)](https://packagist.org/packages/zhaohehe/zrepository)
