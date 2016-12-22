@@ -75,34 +75,6 @@ class CriteriaCreator
     }
 
 
-    protected function getModelName()
-    {
-        // Check if the model isset.
-        if(isset($model) && !empty($model))
-        {
-            $model_name = $model;
-        } else {
-            // Set the model name by the stripped criteria name.
-            $model_name = Inflector::singularize($this->stripRepositoryName());
-        }
-        return $model_name;
-    }
-
-
-    /**
-     * Get the stripped criteria name.
-     *
-     * @return string
-     */
-    protected function stripRepositoryName()
-    {
-        $stripped   = str_replace("criteria", "", strtolower($this->criteria));    // Remove criteria from the string.
-
-        $result = ucfirst($stripped);       // Uppercase criteria name.
-
-        return $result;
-    }
-
 
     /**
      * get stub
@@ -128,14 +100,11 @@ class CriteriaCreator
 
         $path = $this->directory . DIRECTORY_SEPARATOR . $filename . '.php';
 
-        $model_path           = Config::get('repository.model_namespace');
         $criteria_namespace = Config::get('repository.criteria_namespace');
 
         $populate_data = [
             'criteria_namespace' => $criteria_namespace,
-            'criteria_class'     => $filename,
-            'model_path'           => $model_path,
-            'model_class'          => $this->getModelName()
+            'criteria_class'     => $filename
         ];
 
         $stub = $this->getStub();
