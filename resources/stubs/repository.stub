@@ -21,6 +21,6 @@ class repository_class extends Repository
      */
     public function model()
     {
-        return 'model_path\model_name';
+        return 'model_path\model_class';
     }
 }

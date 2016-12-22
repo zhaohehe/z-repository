@@ -1,5 +1,4 @@
 <?php
-
 /*
  * Sometime too hot the eye of heaven shines
  */
@@ -9,14 +8,14 @@ namespace Zhaohehe\Repositories\Console\Commands;
 use Illuminate\Console\Command;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
-use Zhaohehe\Repositories\Console\Commands\Creators\RepositoryCreator;
+use Zhaohehe\Repositories\Console\Commands\Creators\CriteriaCreator;
 
 /**
- * Class MakeRepositoryCommand
+ * Class MakeCriteriaCommand
  *
  * @package Zhaohehe\Repositories\Console\Commands
  */
-class MakeRepositoryCommand extends Command
+class MakeCriteriaCommand extends Command
 {
 
     /**
@@ -24,17 +23,17 @@ class MakeRepositoryCommand extends Command
      *
      * @var string
      */
-    protected $name = 'make:repository';
+    protected $name = 'make:criteria';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Create a new repository class';
+    protected $description = 'Create a new criteria class';
 
     /**
-     * @var RepositoryCreator
+     * @var CriteriaCreator
      */
     protected $creator;
 
@@ -45,11 +44,11 @@ class MakeRepositoryCommand extends Command
 
 
     /**
-     * MakeRepositoryCommand constructor.
+     * MakeCriteriaCommand constructor.
      *
-     * @param RepositoryCreator $creator
+     * @param CriteriaCreator $creator
      */
-    public function __construct(RepositoryCreator $creator)
+    public function __construct(CriteriaCreator $creator)
     {
         parent::__construct();
 
@@ -82,13 +81,13 @@ class MakeRepositoryCommand extends Command
      */
     protected function writeRepository($arguments, $options)
     {
-        $repository = $arguments['repository'];
+        $repository = $arguments['criteria'];
 
         $model = $options['model'];
 
         if ($this->creator->create($repository, $model)) {
 
-            $this->info('Successfully created the repository class');
+            $this->info('Successfully created the criteria class');
         }
     }
 
@@ -101,7 +100,7 @@ class MakeRepositoryCommand extends Command
     protected function getArguments()
     {
         return [
-            ['repository', InputArgument::REQUIRED, 'The repository name.']
+            ['criteria', InputArgument::REQUIRED, 'The criteria name.']
         ];
     }
 
@@ -117,4 +116,5 @@ class MakeRepositoryCommand extends Command
             ['model', null, InputOption::VALUE_OPTIONAL, 'The model name.', null],
         ];
     }
+
 }

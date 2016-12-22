@@ -1,5 +1,4 @@
 <?php
-
 /*
  * Sometime too hot the eye of heaven shines
  */
@@ -10,13 +9,12 @@ use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Facades\Config;
 use Doctrine\Common\Inflector\Inflector;
 
-
 /**
- * Class RepositoryCreator
+ * Class CriteriaCreator
  *
  * @package Zhaohehe\Repositories\Console\Commands\Creators
  */
-class RepositoryCreator
+class CriteriaCreator
 {
 
     /**
@@ -25,9 +23,9 @@ class RepositoryCreator
     protected $files;
 
     /**
-     * @var Repository
+     * @var Criteria
      */
-    protected $repository;
+    protected $criteria;
 
     /**
      * @var model
@@ -35,7 +33,7 @@ class RepositoryCreator
     protected $model;
 
     /**
-     * @var repository directory
+     * @var criteria directory
      */
     protected $directory;
 
@@ -52,10 +50,10 @@ class RepositoryCreator
     }
 
 
-    public function create($repository, $model)
+    public function create($criteria, $model)
     {
         $this->model = $model;
-        $this->repository = $repository;
+        $this->criteria = $criteria;
 
         $this->createDirectory();
 
@@ -64,11 +62,11 @@ class RepositoryCreator
 
 
     /**
-     * create repository directory
+     * create criteria directory
      */
     protected function createDirectory()
     {
-        $this->directory = Config::get('repository.repository_path');
+        $this->directory = Config::get('repository.criteria_path');
 
         if (!$this->files->isDirectory($this->directory)) {    // Create the directory if not.
 
@@ -84,7 +82,7 @@ class RepositoryCreator
         {
             $model_name = $model;
         } else {
-            // Set the model name by the stripped repository name.
+            // Set the model name by the stripped criteria name.
             $model_name = Inflector::singularize($this->stripRepositoryName());
         }
         return $model_name;
@@ -92,15 +90,15 @@ class RepositoryCreator
 
 
     /**
-     * Get the stripped repository name.
+     * Get the stripped criteria name.
      *
      * @return string
      */
     protected function stripRepositoryName()
     {
-        $stripped   = str_replace("repository", "", strtolower($this->repository));    // Remove repository from the string.
+        $stripped   = str_replace("criteria", "", strtolower($this->criteria));    // Remove criteria from the string.
 
-        $result = ucfirst($stripped);       // Uppercase repository name.
+        $result = ucfirst($stripped);       // Uppercase criteria name.
 
         return $result;
     }
@@ -115,7 +113,7 @@ class RepositoryCreator
     {
         $stub_path = __DIR__ . '/../../../../../../resources/stubs/';
 
-        $stub = $this->files->get($stub_path . "repository.stub");
+        $stub = $this->files->get($stub_path . "criteria.stub");
 
         return $stub;
     }
@@ -126,16 +124,16 @@ class RepositoryCreator
      */
     protected function createClass()
     {
-        $filename = (!strpos($this->repository, 'Repository')) ? $this->repository.'Repository' : $this->repository;
+        $filename = (!strpos($this->criteria, 'Criteria')) ? $this->criteria.'Criteria' : $this->criteria;
 
         $path = $this->directory . DIRECTORY_SEPARATOR . $filename . '.php';
 
         $model_path           = Config::get('repository.model_namespace');
-        $repository_namespace = Config::get('repository.repository_namespace');
+        $criteria_namespace = Config::get('repository.criteria_namespace');
 
         $populate_data = [
-            'repository_namespace' => $repository_namespace,
-            'repository_class'     => $filename,
+            'criteria_namespace' => $criteria_namespace,
+            'criteria_class'     => $filename,
             'model_path'           => $model_path,
             'model_class'          => $this->getModelName()
         ];

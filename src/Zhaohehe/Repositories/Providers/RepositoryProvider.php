@@ -8,7 +8,9 @@ namespace Zhaohehe\Repositories\Providers;
 use Illuminate\Support\Composer;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\ServiceProvider;
+use Zhaohehe\Repositories\Console\Commands\MakeCriteriaCommand;
 use Zhaohehe\Repositories\Console\Commands\MakeRepositoryCommand;
+use Zhaohehe\Repositories\Console\Commands\Creators\CriteriaCreator;
 use Zhaohehe\Repositories\Console\Commands\Creators\RepositoryCreator;
 
 class RepositoryProvider extends ServiceProvider
@@ -48,7 +50,9 @@ class RepositoryProvider extends ServiceProvider
 
         $this->registerMakeRepositoryCommand();
 
-        $this->commands(['command.repository.make']);
+        $this->registerMakeCriteriaCommand();
+
+        $this->commands(['command.repository.make', 'command.criteria.make']);
 
         $config_path = __DIR__.'/../../../../config/repository.php';
 
@@ -70,9 +74,9 @@ class RepositoryProvider extends ServiceProvider
             return new RepositoryCreator($app['FileSystem']);
         });
 
-        /* $this->app->singleton('CriteriaCreator', function ($app) {
+        $this->app->singleton('CriteriaCreator', function ($app) {
             return new CriteriaCreator($app['FileSystem']);
-        });*/
+        });
 
     }
 
@@ -93,6 +97,21 @@ class RepositoryProvider extends ServiceProvider
 
 
     /**
+     * Register the make:criteria command.
+     */
+    protected function registerMakeCriteriaCommand()
+    {
+        // Make criteria command.
+        $this->app['command.criteria.make'] = $this->app->share(
+            function($app)
+            {
+                return new MakeCriteriaCommand($app['CriteriaCreator'], $app['Composer']);
+            }
+        );
+    }
+
+
+    /**
      * Get the services provided by the provider.
      *
      * @return array
@@ -100,7 +119,8 @@ class RepositoryProvider extends ServiceProvider
     public function provides()
     {
         return [
-            'command.repository.make'
+            'command.repository.make',
+            'command.criteria.make'
         ];
     }
 }
