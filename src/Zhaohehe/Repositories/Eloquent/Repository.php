@@ -208,7 +208,10 @@ abstract class Repository implements RepositoryInterface, CriteriaInterface
     {
         $this->applyCriteria();
 
-        return $this->model->get($columns);
+        $result = $this->model->get($columns);
+        $this->resetModel();
+
+        return $this->parserResult($result);
     }
 
 
@@ -235,7 +238,10 @@ abstract class Repository implements RepositoryInterface, CriteriaInterface
     {
         $this->applyCriteria();
 
-        return $this->model->paginate($perPage, $columns);
+        $result = $this->model->paginate($perPage, $columns);
+        $this->resetModel();
+
+        return $this->parserResult($result);
     }
 
 
@@ -246,7 +252,11 @@ abstract class Repository implements RepositoryInterface, CriteriaInterface
      */
     public function create(array $data)
     {
-        return $this->model->create($data);
+        $model = $this->model->create($data);
+
+        //todo : event modelCreated
+
+        return $this->parserResult($model);
     }
 
 
@@ -261,7 +271,9 @@ abstract class Repository implements RepositoryInterface, CriteriaInterface
             $this->model->$key = $value;
         }
 
-        return $this->model->save();
+        $model = $this->model->save();
+
+        return $this->parserResult($model);
     }
 
 
@@ -284,7 +296,17 @@ abstract class Repository implements RepositoryInterface, CriteriaInterface
      */
     public function update(array $data, $id, $field = 'id')
     {
-        return $this->model->where($field, '=', $id)->update($data);
+        $temporarySkipTransformer = $this->skipTransformer;
+
+        $this->skipTransformer(true);
+
+        $model = $this->model->where($field, '=', $id)->update($data);
+
+        $this->skipTransformer($temporarySkipTransformer);
+        $this->resetModel();
+
+        // todo : event modelUpdated
+        return $this->parserResult($model);
     }
 
 
@@ -315,7 +337,10 @@ abstract class Repository implements RepositoryInterface, CriteriaInterface
     {
         $this->applyCriteria();
 
-        return $this->model->where($field, '=', $value)->first($columns);
+        $result = $this->model->where($field, '=', $value)->get($columns);
+        $this->resetModel();
+
+        return $this->parserResult($result);
     }
 
 
@@ -345,7 +370,10 @@ abstract class Repository implements RepositoryInterface, CriteriaInterface
             }
         }
 
-        return $this->model->get($columns);
+        $result = $this->model->get($columns);
+        $this->resetModel();
+
+        return $this->parserResult($result);
     }
 
 
