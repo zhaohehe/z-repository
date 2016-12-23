@@ -4,7 +4,7 @@
  * Sometime too hot the eye of heaven shines
  */
 
-namespace Zhaohehe\Repositories\Console\Commands\Creators;
+namespace Zhaohehe\Repositories\Creators\Creators;
 
 use Illuminate\Support\Facades\Config;
 use Doctrine\Common\Inflector\Inflector;
@@ -34,6 +34,7 @@ class RepositoryCreator extends Creator
      */
     protected function getModelName()
     {
+        $model = $this->model;
         // Check if the model isset.
         if(isset($model) && !empty($model))
         {

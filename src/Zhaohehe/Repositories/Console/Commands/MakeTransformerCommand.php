@@ -1,5 +1,4 @@
 <?php
-
 /*
  * Sometime too hot the eye of heaven shines
  */
@@ -9,32 +8,27 @@ namespace Zhaohehe\Repositories\Console\Commands;
 use Illuminate\Console\Command;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
-use Zhaohehe\Repositories\Creators\Creators\RepositoryCreator;
+use Zhaohehe\Repositories\Creators\Creators\TransformerCreator;
 
-/**
- * Class MakeRepositoryCommand
- *
- * @package Zhaohehe\Repositories\Console\Commands
- */
-class MakeRepositoryCommand extends Command
+
+class MakeTransformerCommand extends Command
 {
-
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $name = 'make:repository';
+    protected $name = 'make:transformer';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Create a new repository class';
+    protected $description = 'Create a new transformer class';
 
     /**
-     * @var RepositoryCreator
+     * @var TransformerCreator
      */
     protected $creator;
 
@@ -45,11 +39,11 @@ class MakeRepositoryCommand extends Command
 
 
     /**
-     * MakeRepositoryCommand constructor.
+     * MakeTransformerCommand constructor.
      *
-     * @param RepositoryCreator $creator
+     * @param TransformerCreator $creator
      */
-    public function __construct(RepositoryCreator $creator)
+    public function __construct(TransformerCreator $creator)
     {
         parent::__construct();
 
@@ -82,13 +76,13 @@ class MakeRepositoryCommand extends Command
      */
     protected function writeRepository($arguments, $options)
     {
-        $repository = $arguments['repository'];
+        $repository = $arguments['transformer'];
 
         $model = $options['model'];
 
         if ($this->creator->create($repository, $model)) {
 
-            $this->info('Successfully created the repository class');
+            $this->info('Successfully created the transformer class');
         }
     }
 
@@ -101,7 +95,7 @@ class MakeRepositoryCommand extends Command
     protected function getArguments()
     {
         return [
-            ['repository', InputArgument::REQUIRED, 'The repository name.']
+            ['transformer', InputArgument::REQUIRED, 'The transformer name.']
         ];
     }
 

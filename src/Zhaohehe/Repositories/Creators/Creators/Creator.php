@@ -3,7 +3,7 @@
  * Sometime too hot the eye of heaven shines
  */
 
-namespace Zhaohehe\Repositories\Console\Commands\Creators;
+namespace Zhaohehe\Repositories\Creators\Creators;
 
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Facades\Config;
@@ -29,7 +29,7 @@ abstract class Creator
     /**
      * @var string
      */
-    protected $stub_path = __DIR__ . '/../../../../../../resources/stubs/';
+    protected $stub_path = __DIR__ . '/../stubs/';
 
 
     /**

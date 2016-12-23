@@ -8,7 +8,7 @@ namespace Zhaohehe\Repositories\Console\Commands;
 use Illuminate\Console\Command;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
-use Zhaohehe\Repositories\Console\Commands\Creators\CriteriaCreator;
+use Zhaohehe\Repositories\Creators\Creators\CriteriaCreator;
 
 /**
  * Class MakeCriteriaCommand

@@ -10,8 +10,10 @@ use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\ServiceProvider;
 use Zhaohehe\Repositories\Console\Commands\MakeCriteriaCommand;
 use Zhaohehe\Repositories\Console\Commands\MakeRepositoryCommand;
-use Zhaohehe\Repositories\Console\Commands\Creators\CriteriaCreator;
-use Zhaohehe\Repositories\Console\Commands\Creators\RepositoryCreator;
+use Zhaohehe\Repositories\Console\Commands\MakeTransformerCommand;
+use Zhaohehe\Repositories\Creators\Creators\CriteriaCreator;
+use Zhaohehe\Repositories\Creators\Creators\RepositoryCreator;
+use Zhaohehe\Repositories\Creators\Creators\TransformerCreator;
 
 class RepositoryProvider extends ServiceProvider
 {
@@ -52,7 +54,9 @@ class RepositoryProvider extends ServiceProvider
 
         $this->registerMakeCriteriaCommand();
 
-        $this->commands(['command.repository.make', 'command.criteria.make']);
+        $this->registerMakeTransformerCommand();
+
+        $this->commands(['command.repository.make', 'command.criteria.make', 'command.transformer.make']);
 
         $config_path = __DIR__.'/../../../../config/repository.php';
 
@@ -76,6 +80,10 @@ class RepositoryProvider extends ServiceProvider
 
         $this->app->singleton('CriteriaCreator', function ($app) {
             return new CriteriaCreator($app['FileSystem']);
+        });
+
+        $this->app->singleton('TransformerCreator', function ($app) {
+            return new TransformerCreator($app['FileSystem']);
         });
 
     }
@@ -110,6 +118,20 @@ class RepositoryProvider extends ServiceProvider
         );
     }
 
+    /**
+     * Register the make:transformer command.
+     */
+    protected function registerMakeTransformerCommand()
+    {
+        // Make transformer command.
+        $this->app['command.transformer.make'] = $this->app->share(
+            function($app)
+            {
+                return new MakeTransformerCommand($app['TransformerCreator'], $app['Composer']);
+            }
+        );
+    }
+
 
     /**
      * Get the services provided by the provider.
@@ -120,7 +142,8 @@ class RepositoryProvider extends ServiceProvider
     {
         return [
             'command.repository.make',
-            'command.criteria.make'
+            'command.criteria.make',
+            'command.transformer.make'
         ];
     }
 }

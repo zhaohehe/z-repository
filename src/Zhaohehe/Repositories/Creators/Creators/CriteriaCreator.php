@@ -3,7 +3,7 @@
  * Sometime too hot the eye of heaven shines
  */
 
-namespace Zhaohehe\Repositories\Console\Commands\Creators;
+namespace Zhaohehe\Repositories\Creators\Creators;
 
 use Illuminate\Support\Facades\Config;
 

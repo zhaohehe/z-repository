@@ -44,5 +44,23 @@ return [
     | The model namespace.
     |
     */
-    'model_namespace' => 'App\Models'
+    'model_namespace' => 'App\Models',
+    /*
+    |--------------------------------------------------------------------------
+    | Transformer namespace
+    |--------------------------------------------------------------------------
+    |
+    | The namespace for the transformer classes.
+    |
+    */
+    'transformer_namespace' => 'App\Transformers',
+    /*
+    |--------------------------------------------------------------------------
+    | Transformer path
+    |--------------------------------------------------------------------------
+    |
+    | The path to the transformer folder.
+    |
+    */
+    'transformer_path' => 'app' . DIRECTORY_SEPARATOR . 'Transformers',
 ];
