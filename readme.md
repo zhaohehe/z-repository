@@ -14,7 +14,7 @@ Run the following command from you terminal:
  composer require "zhaohehe/zrepository"
  ```
 
-In your ```config/app.php``` add  ```Zhaohehe\Repositories\Providers\RepositoryProvider::class```to the end of the providers array:
+In your ```config/app.php``` add  ```Zhaohehe\Repositories\Providers\RepositoryProvider::class``` to the end of the providers array:
 
 ```php
 'providers' => [
@@ -79,15 +79,16 @@ class PoemController extends Controller {
     }
 }
 ```
-Or you can run the following command to create repository and criteria class automatic
+Or you can run the following command to create repository, criteria and transformer class automatic,you can use option --model to set model class
 ```bash
 php artisan make:repository Poem 
 php artisan make:criteria Poem
+php artisan make:transformer Poem --model Poem
 ```
 
 ## Available Methods
 
-The following methods are available:
+The following methods are available:(to be added...)
 
 ##### Zhaohehe\Repositories\Contracts\RepositoryInterface
 
@@ -123,6 +124,12 @@ public function getByCriteria(Criteria $criteria);
 public function pushCriteria(Criteria $criteria);
 
 public function applyCriteria();
+```
+
+##### Zhaohehe\Repositories\Contracts\PresenterInterface
+
+```php
+public function setTransformer();
 ```
 
 ### Example usage
@@ -233,6 +240,93 @@ class PoemController extends Controller {
 }
 ```
 
+## Transformer
+Transformers function as a wrapper and renderer for objects.
+Requires Fractal. ```composer require league/fractal```
+
+####Transformer Class
+######Create a Transformer using the command
+
+```bash
+php artisan make:transformer Poem
+```
+This wil generate the class beneath.
+```php
+use League\Fractal\TransformerAbstract;
+use App\Models\Poem;
+
+class PoemTransformer extends TransformerAbstract
+{
+    public function transform(Poem $post)
+    {
+        return [
+            'id'      => (int) $post->id,
+            'title'   => $poem->title
+        ];
+    }
+}
+```
+######Enabling in your Repository
+```php
+namespace App\Repositories;
+use Zhaohehe\Repositories\Eloquent\Repository;
+
+class PoemRepository extends Repository
+{
+    public function model()
+    {
+        return 'App\Poem';
+    }
+    
+    public function transfomer()
+    {
+        return "App\\Transformers\\PoemTransformer";
+    }
+}
+```
+Or enable it in your controller with
+```php
+$this->poem->setTransformer("App\\Transformers\\PoemTransformer");
+```
+
+######Using the transformer after from the Model
+If you recorded a transformer and sometime used the ```skipTransformer()``` method or simply you do not want your result is not changed automatically by the transformer. You can implement Transformable interface on your model so you will be able to transform your model at any time. See below:
+
+In your model, implement the interface ```Zhaohehe\Repositories\Contracts\Transformable``` and ```Zhaohehe\Repositories\Traits\TransformableTraits```
+
+```php
+<?php
+
+namespace App;
+
+use Illuminate\Database\Eloquent\Model;
+use Zhaohehe\Repositories\Contracts\Transformable;
+use Zhaohehe\Repositories\Traits\TransformableTraits;
+
+class Poem extends Model implements Transformable
+{
+    use TransformableTraits;
+}
+
+```
+There, now you can submit your Model individually, See an example:
+```php
+$repository = app('App\PoemRepository');
+$repository->setTransformer("App\\Transformers\\PoemTransformerr");
+
+//Getting the result transformed 
+$poem = $repository->find(1);
+
+dd( $poem ); //It produces an output as array
+
+...
+
+//Skip transformer and bringing the original result of the Model
+$poem = $repository->skipTransformer()->find(1);
+
+dd( $poem ); //It produces an output as a Model object
+dd( $posem->transform() ); //It produces an output as array
+```
 
 ## Credits
 
