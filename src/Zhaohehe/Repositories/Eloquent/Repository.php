@@ -2,10 +2,13 @@
 
 namespace Zhaohehe\Repositories\Eloquent;
 
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Container\Container as App;
 use Zhaohehe\Repositories\Criteria\Criteria;
+use Zhaohehe\Repositories\Presenter\Presenter;
+use Zhaohehe\Repositories\Contracts\Transformable;
 use Zhaohehe\Repositories\Contracts\CriteriaInterface;
 use Zhaohehe\Repositories\Contracts\RepositoryInterface;
 use Zhaohehe\Repositories\Exceptions\RepositoryException;
@@ -31,6 +34,15 @@ abstract class Repository implements RepositoryInterface, CriteriaInterface
     protected $criteria;
 
     /**
+     * @var
+     */
+    protected $presenter;
+    /**
+     * @var
+     */
+    protected $transformer;
+
+    /**
      * @var Model
      */
     protected $model;
@@ -40,15 +52,48 @@ abstract class Repository implements RepositoryInterface, CriteriaInterface
      */
     protected $skipCriteria = false;
 
-    public function __construct(App $app, Collection $collection)
+    /**
+     * @var bool
+     */
+    protected $skipTransformer = false;
+
+
+    /**
+     * Repository constructor.
+     * @param App $app
+     * @param Collection $collection
+     */
+    public function __construct(App $app, Collection $collection, Presenter $presenter)
     {
         $this->app = $app;
         $this->criteria = $collection;
+        $this->presenter = $presenter;
 
         $this->resetScope();
         $this->makeModel();
+        $this->makeTransformer();
+        $this->boot();
     }
 
+
+    /**
+     * boot
+     */
+    public function boot()
+    {
+
+    }
+
+
+    /**
+     * Specify Transformer class name
+     *
+     * @return string
+     */
+    public function transformer()
+    {
+        return null;
+    }
 
     /**
      * Specify Model
@@ -81,6 +126,40 @@ abstract class Repository implements RepositoryInterface, CriteriaInterface
     }
 
 
+    public function setTransformer($transformer)
+    {
+        $this->makeTransformer($transformer);
+
+        return $this;
+    }
+
+
+    public function makeTransformer($transformer = null)
+    {
+        $transformer = !is_null($transformer) ? $transformer : $this->transformer();
+
+        if (!is_null($transformer)) {
+            $this->transformer = is_string($transformer) ? $this->app->make($transformer) : $transformer;    //string or object
+
+         /*   if (!$this->transformer instanceof ...) {
+                throw
+            }*/
+
+         return $this->transformer;
+        }
+
+        return null;
+    }
+
+    /**
+     * reset model
+     */
+    public function resetModel()
+    {
+        $this->makeModel();
+    }
+
+
     /**
      * @return $this
      */
@@ -100,6 +179,20 @@ abstract class Repository implements RepositoryInterface, CriteriaInterface
     public function skipCriteria($status = true)
     {
         $this->skipCriteria = $status;
+
+        return $this;
+    }
+
+
+    /**
+     * Skip Presenter Wrapper
+     * @param bool $status
+     *
+     * @return $this
+     */
+    public function skipTransformer($status = true)
+    {
+        $this->skipTransformer = $status;
 
         return $this;
     }
@@ -204,8 +297,10 @@ abstract class Repository implements RepositoryInterface, CriteriaInterface
     public function find($id, $columns = ['*'])
     {
         $this->applyCriteria();
+        $model = $this->model->findOrFail($id, $columns);
+        $this->resetModel();
 
-        return $this->model->find($id, $columns);
+        return $this->parserResult($model);
     }
 
 
@@ -315,5 +410,35 @@ abstract class Repository implements RepositoryInterface, CriteriaInterface
         }
 
         return $this;
+    }
+
+
+    /**
+     * Wrapper result data
+     * @param $result
+     *
+     * @return mixed|void
+     */
+    public function parserResult($result)
+    {
+        $this->presenter->transformer = $this->transformer;
+
+        if ($result instanceof Collection || $result instanceof LengthAwarePaginator) {
+            $result->each(function ($model) {
+                if ($model instanceof Transformable) {
+                    $model->setPresenter($this->presenter);
+                }
+
+                return $model;
+            });
+        } elseif ($result instanceof Transformable) {
+            $result = $result->setPresenter($this->presenter);
+        }
+
+        if (!$this->skipTransformer) {
+            return $this->presenter->present($result);
+        }
+
+        return $result;
     }
 }
