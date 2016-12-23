@@ -236,4 +236,4 @@ class PoemController extends Controller {
 
 ## Credits
 
-This package is largely inspired by [this](https://github.com/prettus/l5-repository) great package by @andersao . [Here](https://github.com/bosnadev/repository/) is another package I used as reference.
+This package is largely inspired by [this](https://github.com/prettus/l5-repository) great package by @andersao . But I don't like it :).
