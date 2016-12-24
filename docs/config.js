@@ -1,7 +1,7 @@
 self.$config = {
 
 	// github repo 的缩略名
-    repo: 'zhaohehe/zrepository',
+    repo: 'zhaohehe/z-repository',
 
     nav: [
     // 首页
