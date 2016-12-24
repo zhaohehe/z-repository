@@ -256,6 +256,7 @@ abstract class Repository implements RepositoryInterface, CriteriaInterface
 
         //todo : event modelCreated
 
+        return $model;
         return $this->parserResult($model);
     }
 
@@ -463,7 +464,7 @@ abstract class Repository implements RepositoryInterface, CriteriaInterface
             $result = $result->setPresenter($this->presenter);
         }
 
-        if (!$this->skipTransformer) {
+        if (!$this->skipTransformer && $this->transformer) {
             return $this->presenter->present($result);
         }
 
