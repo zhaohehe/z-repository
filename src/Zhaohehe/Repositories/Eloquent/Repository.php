@@ -6,13 +6,15 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Container\Container as App;
+use Zhaohehe\Repositories\Contracts\ModelEventInterface;
+use Zhaohehe\Repositories\Contracts\RepositoryEventInterface;
 use Zhaohehe\Repositories\Criteria\Criteria;
 use Zhaohehe\Repositories\Presenter\Presenter;
 use Zhaohehe\Repositories\Contracts\Transformable;
 use Zhaohehe\Repositories\Contracts\CriteriaInterface;
 use Zhaohehe\Repositories\Contracts\RepositoryInterface;
 use Zhaohehe\Repositories\Exceptions\RepositoryException;
-
+use Zhaohehe\Repositories\Traits\RepositoryEventTraits;
 
 
 /**
@@ -20,8 +22,11 @@ use Zhaohehe\Repositories\Exceptions\RepositoryException;
  *
  * @package Zhaohehe\Repositories\Eloquent
  */
-abstract class Repository implements RepositoryInterface, CriteriaInterface
+abstract class Repository implements RepositoryInterface, CriteriaInterface, RepositoryEventInterface
 {
+
+    use RepositoryEventTraits;
+
 
     /**
      * @var Container
@@ -117,6 +122,10 @@ abstract class Repository implements RepositoryInterface, CriteriaInterface
     public function setModel($eloquentModel)
     {
         $model = $this->app->make($eloquentModel);
+
+        if ($model instanceof ModelEventInterface) {
+            $model->setRepository($this);    //set repository
+        }
 
         if ( ! $model instanceof Model ) {
             throw new RepositoryException('Class {$model} must be an instance of Illuminate\\Database\\Eloquent\\Model', 201);
@@ -254,9 +263,6 @@ abstract class Repository implements RepositoryInterface, CriteriaInterface
     {
         $model = $this->model->create($data);
 
-        //todo : event modelCreated
-
-        return $model;
         return $this->parserResult($model);
     }
 
@@ -306,7 +312,6 @@ abstract class Repository implements RepositoryInterface, CriteriaInterface
         $this->skipTransformer($temporarySkipTransformer);
         $this->resetModel();
 
-        // todo : event modelUpdated
         return $this->parserResult($model);
     }
 
