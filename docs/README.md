@@ -37,7 +37,7 @@ php artisan vendor:publish
 ```bash
 php artisan make:repository Poem --model Poem
 ```
-其中，--model Poem 是可选的，用来指定repository中model的名称，默认情况下，会根据repository的名称自动产生model名，你可以在repository.php配置文件中设置该类的命名空间等，后面的criteria和transforme的自动生成也是，生成的文件如下：
+其中，--model Poem 是可选的，用来指定repository中model的名称，默认情况下，会根据repository的名称自动产生model名，你可以在repository.php配置文件中设置该类的命名空间等，后面的criteria和transforme的自动生成也是这样，生成的文件如下：
 
 ```php
 <?php namespace App\Repositories;
@@ -53,7 +53,7 @@ class PoemRepository extends Repository
     }
 }
 ```
-当然，你也可以手动创建repository类，该类务必继承自```Zhaohehe\Repositories\Eloquent\Repository``` ，且实现model()方法，用来指定该repository对应的数据模型。
+当然，你也可以手动创建repository类，该类务必继承自```Zhaohehe\Repositories\Eloquent\Repository``` ，且实现model()方法，该方法用来指定该repository对应的数据模型。
 现在，来创建你的```App\Poem``` 数据模型：
 
 
@@ -95,7 +95,7 @@ class PoemController extends Controller
 
 #### 暂时可用的方法
 
-下面这些方法是暂时可以使用的，但是显然不够，后面会陆续添加
+下面这些方法是暂时可以使用的，显然不够，后面会陆续添加
 
 ##### Zhaohehe\Repositories\Contracts\RepositoryInterface
 
@@ -170,9 +170,9 @@ $this->poem->findWhere([
 
 ### Criteria
 
->Criteria是一个简单的方式让你可以根据具体或者一系列复杂的条件来向你的repository发起查询，你可以将一些可能会在多个接口或者情况下用到的查询条件放到这里，这样你就可以复用，而且将按条件查询的代码从你的controller中抽离出来，精简代码的同时，也是的各部分之间的耦合更加松散，你的criteria类必须继承自```Zhaohehe\Repositories\Criteria\Criteria``` 抽象类。
+>Criteria是一个让你可以根据具体的或者一系列复杂的条件来向你的repository发起查询的方式，你可以将一些可能会在多个接口或者情况下用到的查询条件放到这里，到达复用的目的，而且可以将复杂的查询条件从你的controller中抽离出来，精简代码的同时，也使得各部分之间的耦合更加松散，你的criteria类必须继承自```Zhaohehe\Repositories\Criteria\Criteria``` 抽象类。
 
-一个简单的例子，比如你要查询所有唐代的诗词，当然时间情况下，查询的条件可能要复杂的多，否则就没必要将它抽离出来了:
+一个简单的例子，比如你要查询所有唐代的诗词，（实际情况下，查询的条件可能要复杂的多，否则就没必要将它抽离出来了）:
 
 ```php
 <?php namespace App\Repositories\Criteria\Poem;
@@ -191,7 +191,7 @@ class CreatedInTangDynasty extends Criteria
 }
 ```
 
-现在，在你的controller里面你可以调用repository的```pushCriteria```方法:
+现在，在你的controller里面，你可以调用repository的```pushCriteria```方法:
 
 ```php
 <?php namespace App\Http\Controllers;
@@ -217,17 +217,16 @@ class PoemController extends Controller
 ```
 
 ### Transformer
->Transformers 的作用是按照接口的需要来包装你从数据库查询出来的结果，你可以在这里简洁的设置你需要哪些字段，每一个字段的数据类型，或者你要联查多个表来组成接口所需要的数据，你也可以在这里利用eloquent的relationship方便的完成，每一个Transformer都需要继承自```League\Fractal\TransformerAbstract```抽象类，这是一个第三方的包，需要你用composer引入
+>Transformers 的作用是按照接口的需要来包装你从数据库查询出来的结果，你可以在这里方便的设置你需要哪些字段，每一个字段的数据类型，或者你要联查多个表来组成接口所需要的数据时，你可以在这里利用eloquent的relationship方便的完成，每一个Transformer都需要继承自```League\Fractal\TransformerAbstract```抽象类，这是一个第三方的包，需要你用composer引入
 
  ```composer require league/fractal```
 
-#### Transformer Class
 ###### 用以下命令创建一个Transformer
 
 ```bash
 php artisan make:transformer Poem
 ```
-这会创建下面这样的一个Transformer类，比如你需要从接口返回一首诗的id，title，和author，而你的Poem表里面只存有author_id，你可以用Model的relationship方便的做到，这需要你在Poem Model中去定义和Author Model之间的关系，详情请看官方文档的介绍：
+这会创建下面这样的一个Transformer类，比如你需要从接口返回一首诗的id，title，和author，而你的Poem表里面只存有author_id，你可以用Model的relationship方便的做到，这需要你在Poem Model中去定义和Author Model之间的关系，这部分详情请看官方文档的介绍：
 
 ```php
 use App\Models\Poem;
@@ -265,13 +264,13 @@ class PoemRepository extends Repository
     }
 }
 ```
-你也可以再controller中调用```setTransformer```方法来使用
+你也可以在controller中调用```setTransformer```方法来使用
 ```php
 $this->poem->setTransformer("App\\Transformers\\PoemTransformer");
 ```
 
 ###### 在Model后使用
-当你在对repository使用了transformer之后，也许在某些场景下你不希望查询结果都自动的被transform，你可以调用repository的```skipTransformer()```方法。这个时候你可以让你的Model去实现```Zhaohehe\Repositories\Contracts\Transformable```接口，这样你就可以在你想要的时候直接调用Model的```transform```方法来灵活地呈现你的查询结果的样式，当你的Model实现了```Zhaohehe\Repositories\Contracts\Transformable```接口之后，你必须要使用```Zhaohehe\Repositories\Traits\TransformableTraits```来赋予Model相应的功能，代码如下：
+当你在对repository使用了transformer之后，也许在某些场景下你不希望查询结果自动的被transform掉，你可以调用repository的```skipTransformer()```方法来跳过转换。这个时候你可以让你的Model去实现```Zhaohehe\Repositories\Contracts\Transformable```接口，这样你就可以在你想要的时候直接调用Model的```transform```方法来灵活地呈现你的查询结果的样式，当你的Model实现了```Zhaohehe\Repositories\Contracts\Transformable```接口之后，你必须要使用```Zhaohehe\Repositories\Traits\TransformableTraits```来赋予Model相应的功能，代码如下：
 
 ```php
 <?php
@@ -304,6 +303,74 @@ $poem = $repository->skipTransformer()->find(1);    //跳过transformer，返回
 dd( $poem );    //这会返回一个普通model的查询结果
 dd( $posem->transform() );    //调用$poem的```transform```方法，返回转换过的结果
 ```
+### EventObserver
 
-## Credits
-z-repository借鉴了很多大牛的代码，尤其是[这个](https://github.com/prettus/l5-repository) ，只是在实际的使用中，感觉存在很多自己不需要的东西，我想让自己使用的工具简洁，强大，且了如指掌，所以有了这个，我想我要继续把这个包做的更加地完善和锋利。
+>事件观察者允许你在repository中方便的针对数据库操作流程中的某一个具体的节点绑定你想要执行的事件
+
+#### 在Model中实现接口
+如果你想开启该功能，你需要在你的Model类中实现```Zhaohehe\Repositories\Contracts\ModelEventInterface```接口，并使用```Zhaohehe\Repositories\Traits\ModelEventTraits```来赋予你的数据模型该功能，你的Model类大概会长成这样：
+```php
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+use Zhaohehe\Repositories\Traits\ModelEventTraits;
+use Zhaohehe\Repositories\Contracts\ModelEventInterface;
+
+class Poem extends Model implements ModelEventInterface
+{
+    use ModelEventTraits;
+
+    protected $fillable = [
+   
+    ];
+
+}
+```
+#### 在repository中注册observer
+
+比如你想在每一次新建一条Poem记录之后，将当前的某些信息记录到操作日志中，你可以在PoemRepository中重载```onCreated```方法，代码如下:
+
+```php
+<?php
+
+namespace App\Repositories;
+
+use Zhaohehe\Repositories\Eloquent\Repository;
+
+class PoemRepository extends Repository
+{
+    public function model()
+    {
+        return 'App\Models\Poem';
+    }
+
+    public function onCreated()
+    {
+        //do something
+    }
+}
+```
+这样，当你在调用repository的```create```方法创建新的记录的时候，```onCreated```会在创建的动作结束后被调用。
+
+#### 可用的方法
+
+```php
+function onCreating();
+function onCreated();
+
+function onUpdating();
+function onUpdated();
+
+function onSaving();
+function onSaved();
+
+function onDeleting();
+function onDeleted();
+```
+以上方法会在相应的节点被激活。
+
+## 最后
+
+以上的思路和代码是在阅读了很多大神的代码之后产生的，尤其是[这个](https://github.com/prettus/l5-repository)，很荣幸可以站在巨人们的肩膀上。
