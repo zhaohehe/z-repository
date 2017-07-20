@@ -366,7 +366,7 @@ abstract class Repository implements RepositoryInterface, CriteriaInterface, Rep
             } elseif (is_array($value)) {
                 if (count($value) == 3) {    // 'id' ,'>', 100
                     list($field, $operator, $search) = $value;
-                    $this->model = (! $or) ? $this->model->where($field, $operator, $search) : $this->model->oeWhere($field, $operator, $search);
+                    $this->model = (! $or) ? $this->model->where($field, $operator, $search) : $this->model->orWhere($field, $operator, $search);
                 } elseif (count($value) == 2) {    // 'name', 'zhaohehe'
                     list($field, $search) = $value;
                     $this->model = (! $or) ? $this->model->where($field, $search) : $this->model->orWhere($field, $search);
