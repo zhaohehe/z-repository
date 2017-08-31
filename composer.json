@@ -21,5 +21,12 @@
             "Zhaohehe\\": "src/Zhaohehe/"
         }
     },
+   "extra": {
+        "laravel": {
+            "providers": [
+                "Zhaohehe\\Repositories\\Providers\\RepositoryProvider"
+            ]
+        }
+    },
     "minimum-stability": "dev"
 }
