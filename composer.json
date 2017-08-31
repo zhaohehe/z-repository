@@ -11,6 +11,7 @@
     ],
     "require": {
         "php": ">=5.5.9",
+        "league/fractal": "^0.13",
         "illuminate/support": "^5.2",
         "illuminate/database": "^5.2",
         "illuminate/filesystem": "^5.2",

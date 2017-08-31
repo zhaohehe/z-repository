@@ -50,13 +50,11 @@ class RepositoryProvider extends ServiceProvider
     {
         $this->registerBindings();
 
-        $this->registerMakeRepositoryCommand();
+        $this->commands(MakeRepositoryCommand::class);    // Register the make:repository command.
 
-        $this->registerMakeCriteriaCommand();
+        $this->commands(MakeCriteriaCommand::class);      // Register the make:criteria command.
 
-        $this->registerMakeTransformerCommand();
-
-        $this->commands(['command.repository.make', 'command.criteria.make', 'command.transformer.make']);
+        $this->commands(MakeTransformerCommand::class);   // Register the make:transformer command.
 
         $config_path = __DIR__.'/../../../../config/repository.php';
 
@@ -88,51 +86,6 @@ class RepositoryProvider extends ServiceProvider
 
     }
 
-
-    /**
-     * Register the make:repository command.
-     */
-    protected function registerMakeRepositoryCommand()
-    {
-        // Make repository command.
-        $this->app['command.repository.make'] = $this->app->share(
-            function($app)
-            {
-                return new MakeRepositoryCommand($app['RepositoryCreator'], $app['Composer']);
-            }
-        );
-    }
-
-
-    /**
-     * Register the make:criteria command.
-     */
-    protected function registerMakeCriteriaCommand()
-    {
-        // Make criteria command.
-        $this->app['command.criteria.make'] = $this->app->share(
-            function($app)
-            {
-                return new MakeCriteriaCommand($app['CriteriaCreator'], $app['Composer']);
-            }
-        );
-    }
-
-    /**
-     * Register the make:transformer command.
-     */
-    protected function registerMakeTransformerCommand()
-    {
-        // Make transformer command.
-        $this->app['command.transformer.make'] = $this->app->share(
-            function($app)
-            {
-                return new MakeTransformerCommand($app['TransformerCreator'], $app['Composer']);
-            }
-        );
-    }
-
-
     /**
      * Get the services provided by the provider.
      *
@@ -141,9 +94,7 @@ class RepositoryProvider extends ServiceProvider
     public function provides()
     {
         return [
-            'command.repository.make',
-            'command.criteria.make',
-            'command.transformer.make'
+
         ];
     }
 }
