@@ -12,21 +12,10 @@
 
  ```bash
  composer require "zhaohehe/zrepository"
+
+ php artisan package:discover
  ```
 
-然后，打开laravel的```config/app.php``` 文件，增加```Zhaohehe\Repositories\Providers\RepositoryProvider::class``` 到你的providers数组
-
-```php
-'providers' => [
-    ...
-    Zhaohehe\Repositories\Providers\RepositoryProvider::class,
-],
-```
-
-最后，发布，这会在你的```config```目录下生成一个```repository.php```文件，用来配置repository
-```bash
-php artisan vendor:publish
-```
 
 
 ## 使用
