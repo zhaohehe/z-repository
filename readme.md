@@ -1,4 +1,4 @@
-# z-repository  for  laravel5.4
+# z-repository
 
 >z-repository是一个为laravel5提供的数据库抽象层，目的是为了将应用的数据库操作和核心的业务逻辑分离开，保证controller的精致。
 
@@ -11,11 +11,22 @@
 
 
  ```bash
- composer require "zhaohehe/zrepository:1.1"
-
- php artisan package:discover
+ composer require "zhaohehe/zrepository:1.1.0"
  ```
 
+然后，打开laravel的```config/app.php``` 文件，增加```Zhaohehe\Repositories\Providers\RepositoryProvider::class``` 到你的providers数组
+
+```php
+'providers' => [
+    ...
+    Zhaohehe\Repositories\Providers\RepositoryProvider::class,
+],
+```
+
+最后，发布，这会在你的```config```目录下生成一个```repository.php```文件，用来配置repository
+```bash
+php artisan vendor:publish
+```
 
 
 ## 使用
