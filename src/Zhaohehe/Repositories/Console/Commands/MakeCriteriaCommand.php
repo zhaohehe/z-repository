@@ -72,6 +72,8 @@ class MakeCriteriaCommand extends Command
         $this->writeRepository($arguments, $options);
 
         $this->composer->dumpAutoloads();
+
+        $this->info("Criteria created successfully.");
     }
 
 

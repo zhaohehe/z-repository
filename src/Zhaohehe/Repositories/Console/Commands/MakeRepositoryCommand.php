@@ -73,6 +73,8 @@ class MakeRepositoryCommand extends Command
         $this->writeRepository($arguments, $options);
 
         $this->composer->dumpAutoloads();
+
+        $this->info("Repository created successfully.");
     }
 
 

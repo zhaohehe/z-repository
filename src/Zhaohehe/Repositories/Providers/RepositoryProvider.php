@@ -8,9 +8,6 @@ namespace Zhaohehe\Repositories\Providers;
 use Illuminate\Support\Composer;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\ServiceProvider;
-use Zhaohehe\Repositories\Console\Commands\MakeCriteriaCommand;
-use Zhaohehe\Repositories\Console\Commands\MakeRepositoryCommand;
-use Zhaohehe\Repositories\Console\Commands\MakeTransformerCommand;
 use Zhaohehe\Repositories\Creators\Creators\CriteriaCreator;
 use Zhaohehe\Repositories\Creators\Creators\RepositoryCreator;
 use Zhaohehe\Repositories\Creators\Creators\TransformerCreator;
@@ -22,7 +19,7 @@ class RepositoryProvider extends ServiceProvider
      *
      * @var bool
      */
-    protected $defer = true;
+    protected $defer = false;
 
 
     /**
@@ -32,12 +29,15 @@ class RepositoryProvider extends ServiceProvider
      */
     public function boot()
     {
-        $config_path = __DIR__.'/../../../../config/repository.php';
 
-        $this->publishes(
-            [$config_path => config_path('repository.php')],
-            'repository'
+        $this->publishes([
+            __DIR__.'/../../../../config/repository.php' => config_path('repository.php')
+        ]);
+
+        $this->mergeConfigFrom(
+            __DIR__.'/../../../../config/repository.php', 'repository'
         );
+
     }
 
 
@@ -50,18 +50,11 @@ class RepositoryProvider extends ServiceProvider
     {
         $this->registerBindings();
 
-        $this->commands(MakeRepositoryCommand::class);    // Register the make:repository command.
+        $this->commands('Zhaohehe\Repositories\Console\Commands\MakeRepositoryCommand');    // Register the make:repository command.
 
-        $this->commands(MakeCriteriaCommand::class);      // Register the make:criteria command.
+        $this->commands('Zhaohehe\Repositories\Console\Commands\MakeCriteriaCommand');      // Register the make:criteria command.
 
-        $this->commands(MakeTransformerCommand::class);   // Register the make:transformer command.
-
-        $config_path = __DIR__.'/../../../../config/repository.php';
-
-        $this->mergeConfigFrom(
-            $config_path,
-            'repository'
-        );
+        $this->commands('Zhaohehe\Repositories\Console\Commands\MakeTransformerCommand');   // Register the make:transformer command.
     }
 
     protected function registerBindings()
@@ -93,8 +86,6 @@ class RepositoryProvider extends ServiceProvider
      */
     public function provides()
     {
-        return [
-
-        ];
+        return [];
     }
 }

@@ -1,4 +1,4 @@
-# z-repository
+# z-repository  for  laravel5.4
 
 >z-repository是一个为laravel5提供的数据库抽象层，目的是为了将应用的数据库操作和核心的业务逻辑分离开，保证controller的精致。
 
@@ -11,7 +11,7 @@
 
 
  ```bash
- composer require "zhaohehe/zrepository"
+ composer require "zhaohehe/zrepository:1.1"
 
  php artisan package:discover
  ```

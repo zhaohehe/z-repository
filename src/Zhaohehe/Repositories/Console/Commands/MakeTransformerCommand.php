@@ -67,6 +67,8 @@ class MakeTransformerCommand extends Command
         $this->writeRepository($arguments, $options);
 
         $this->composer->dumpAutoloads();
+
+        $this->info("Transformer created successfully.");
     }
 
 
