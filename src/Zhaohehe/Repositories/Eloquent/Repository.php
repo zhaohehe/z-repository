@@ -207,6 +207,22 @@ abstract class Repository implements RepositoryInterface, CriteriaInterface, Rep
     }
 
 
+    /**
+     * @param array $columns
+
+     * @return mixed|void
+     */
+    public function first($columns = ['*'])
+    {
+        $this->applyCriteria();
+
+        $result = $this->model->first($columns);
+        $this->resetModel();
+
+        return $this->parserResult($result);
+    }
+
+
 
     /**
      * @param array $columns
