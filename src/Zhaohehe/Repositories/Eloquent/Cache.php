@@ -10,45 +10,45 @@ use Illuminate\Database\Eloquent\Model;
 
 class Cache
 {
-	/**
-	 * @var array
-	 */
-	public static $cache = [];
+    /**
+     * @var array
+     */
+    public static $cache = [];
 
-	/**
-	 * @param $model
-	 * @return string
-	 */
-	private static function generateKey($model)
-	{
-		return md5(get_class($model));
-	}
+    /**
+     * @param $model
+     * @return string
+     */
+    private static function generateKey($model)
+    {
+        return md5(get_class($model));
+    }
 
-	/**
-	 * @param Model $model
-	 */
-	public static function cacheModel(Model $model)
-	{
-		$key = self::generateKey($model);
+    /**
+     * @param Model $model
+     */
+    public static function cacheModel(Model $model)
+    {
+        $key = self::generateKey($model);
 
-		if (!isset(self::$cache[$key])) {
-			self::$cache[$key] = [];
-		}
+        if (!isset(self::$cache[$key])) {
+            self::$cache[$key] = [];
+        }
 
-		$cacheId = $model->getKey();
+        $cacheId = $model->getKey();
 
-		self::$cache[$key][$cacheId] = $model;
-	}
+        self::$cache[$key][$cacheId] = $model;
+    }
 
-	/**
-	 * @param $model
-	 * @param $id
-	 * @return null
-	 */
-	public static function fetchModel($model, $id)
-	{
-		$key = self::generateKey($model);
+    /**
+     * @param $model
+     * @param $id
+     * @return null
+     */
+    public static function fetchModel($model, $id)
+    {
+        $key = self::generateKey($model);
 
-		return self::$cache[$key][$id] ?? null;
-	}
+        return self::$cache[$key][$id] ?? null;
+    }
 }

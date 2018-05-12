@@ -347,23 +347,24 @@ abstract class Repository implements RepositoryInterface, CriteriaInterface, Rep
         return $this->parserResult($model);
     }
 
-	/**
-	 * @param $id
-	 * @param array $columns
-	 * @return mixed
-	 */
-    public function findWithCache($id, $columns = ['*'])
-	{
-		$item = Cache::fetchModel($this->model, $id);
-		if (!$item) {
-			$item = $this->find($id, $columns);
-			if ($item) {
-				Cache::cacheModel($item);
-			}
-		}
 
-		return $item;
-	}
+    /**
+     * @param $id
+     * @param array $columns
+     * @return mixed|null
+     */
+    public function findWithCache($id, $columns = ['*'])
+    {
+        $item = Cache::fetchModel($this->model, $id);
+        if (!$item) {
+            $item = $this->find($id, $columns);
+            if ($item) {
+                Cache::cacheModel($item);
+            }
+        }
+
+        return $item;
+    }
 
     /**
      * @param $field

@@ -9,7 +9,6 @@ use Illuminate\Container\Container;
 use Illuminate\Support\Collection;
 use PHPUnit\Framework\TestCase;
 use Test\DataSource\DataRepository;
-use Zhaohehe\Repositories\Eloquent\Cache;
 use Zhaohehe\Repositories\Presenter\Presenter;
 
 class RepositoryTest extends TestCase
